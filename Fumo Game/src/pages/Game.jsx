@@ -4,8 +4,7 @@ import axios from "axios"
 let fumoUrl = "http://127.0.0.1:3000/fumo"
 
 function Game() {
-  const [fumoCoins, setFCoins] = useState(100)
-  const [fumoSouls, setFSouls] = useState(0)
+  const [fumoCoins, setFCoins] = useState(50)
   const [gameStarted, setGameStarted] = useState(false)
   const [coinsPerClick, setCPC] = useState(1)
   const [fumos, setFumos] = useState([])
@@ -15,7 +14,7 @@ function Game() {
     url: "",
     attack: "",
     power: "",
-    spell: ""
+    spell: "",
   })
   const [ownedFumos, setOwnedFumos] = useState([])
 
@@ -59,33 +58,48 @@ function Game() {
     }
   }, [ownedFumos])
 
-  const summonFumo = async () => {
-    await axios.get(fumoUrl)
+  const summonFumo = () => {
+    axios.get(fumoUrl)
       .then((res) => res.data)
       .then(data => {
         setFumos(data)
         let random = Math.floor(Math.random() * data.length)
-        setOwnedFumos(owned => [...owned, data[random]])
+        setSummFumo(data[random])
       })
       .catch(err => console.log(err))
   }
 
-  const calculateCPC = () => {
-    if(ownedFumos) {
-      ownedFumos.map((fumo) => addCPC(fumo.power))
-    } else setCPC(1)
+  const addFumo = (fumo) => {
+    const ownedFumo = ownedFumos.find(owned => owned.id === fumo.id)
+    if(ownedFumo) {
+      const newLevel = ownedFumo.level + 1
+      fumo.level = newLevel
+      fumo.attack = fumo.attack + newLevel - 1
+      fumo.power = fumo.power + newLevel - 1
+      let newOwnedFumos = ownedFumos.filter(owned => owned.id !== fumo.id)
+      newOwnedFumos.push(fumo)
+      setOwnedFumos(newOwnedFumos)
+    } else {
+      fumo.level = 1
+      setOwnedFumos(owned => [...owned, fumo])
+    }
   }
 
-  const addCPC = (num) => {
-    let newCPC = coinsPerClick + num
-    console.log(newCPC)
+  const calculateCPC = () => {
+    let newCPC = 1
+    console.log(ownedFumos)
+    if(ownedFumos != []) {
+      ownedFumos.map((fumo) => {
+        let fumoPower = fumo.power
+        newCPC += fumoPower
+      })
+    }
     setCPC(newCPC)
   }
 
   const handleReset = () => {
     localStorage.clear()
-    setFCoins(100)
-    setFSouls(0)
+    setFCoins(50)
     setGameStarted(!gameStarted)
     setOwnedFumos([])
     setCPC(1)
@@ -104,6 +118,7 @@ function Game() {
     let coinCount = fumoCoins - 50
     setFCoins(coinCount)
     summonFumo()
+    addFumo(summonedFumo)
   }
 
   if (gameStarted) {
@@ -111,21 +126,21 @@ function Game() {
       <>
         <div className="currencies">
           <div className="FCoins">Fumo coins: {fumoCoins}</div>
-          <div className="souls">Fumo Souls: {fumoSouls}</div>
         </div>
-        <div className="w-max">
-          <img className="inset-16 w-32" src="https://media.tenor.com/dEzP_xFI_oQAAAAC/touhou-fumo.gif" onClick={() => handleFumoClick()}/>
+        <div className="w-max top-10">
+          <p>Click on the fumo to get coins !</p>
+          <img className="inset-16 w-32 border-3 border-yellow-400" src="https://media.tenor.com/dEzP_xFI_oQAAAAC/touhou-fumo.gif" onClick={() => handleFumoClick()}/>
           <p>Coins per click: {coinsPerClick}</p>
+          <button onClick={() => handleSummon()} disabled={!(fumoCoins >= 50)} className='border-teal-300 border-2'>50 Fumo coins - Summon Fumo</button>
+          <button onClick={() => handleReset()} className='bg-red-600'>Reset Game</button>
         </div>
-        <button onClick={() => handleSummon()} disabled={!(fumoCoins >= 50)}>50 Fumo coins - Summon Fumo</button>
-        <button onClick={() => handleReset()}>Reset Game</button>
-        <br/>
+
         <ul className='grid grid-cols-5'>
           {ownedFumos.map((fumo) => (
             <li className='relative flex flex-col justify-top items-center border-double border-2' key={fumo.id}>
               <img className='mx-auto' src={fumo.url} />
               <h2>{fumo.name}</h2>
-              <h3 className='mb-8'>{fumo.attack} ATK - {fumo.power} PWR <br/> spell effect: {fumo.spell}</h3>
+              <h3 className='mb-8'>{fumo.attack} ATK - {fumo.power} PWR <br/> Level {fumo.level}</h3>
             </li> 
           ))}
         </ul>
@@ -134,7 +149,7 @@ function Game() {
   } else {
     return (
       <>
-        <button onClick={() => handleStart()}>Start Game</button>
+        <button onClick={() => handleStart()} className='bg-green-500'>Start Game</button>
       </>
     )
   }
