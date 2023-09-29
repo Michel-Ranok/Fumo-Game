@@ -4,16 +4,18 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './index.css'
 
 import Layout from "./pages/Layout";
-import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
+import Fumos from "./pages/Fumos";
+import Game from './pages/Game';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<Game />} />
           <Route path="*" element={<NoPage />} />
+          <Route path="/fumos" element={<Fumos />} />
         </Route>
       </Routes>
     </BrowserRouter>
