@@ -35,10 +35,10 @@ db.serialize(() => {
             ('Kirisame Marisa','https://fumo.website/img/002.jpg','3','1','2'),\
             ('Cirno','https://fumo.website/img/014.jpg','1','4','1'),\
             ('Izayoi Sakuya','https://fumo.website/img/004.jpg','3','2','5'),\
-            ('Remilia Scarlet','https://fumo.website/img/005.jpg','4','2','4') \
-            ('Flandre Scarlet','https://fumo.website/img/008.jpg','4','1','4') \
-            ('Komeiji Koishi','https://fumo.website/img/197.jpg','2','3','5') \
-            ('Saigyouji Yuyuko','https://fumo.website/img/040.jpg','3','2','3') \
+            ('Remilia Scarlet','https://fumo.website/img/005.jpg','4','2','4'), \
+            ('Flandre Scarlet','https://fumo.website/img/008.jpg','4','1','4'), \
+            ('Komeiji Koishi','https://fumo.website/img/197.jpg','2','3','5'), \
+            ('Saigyouji Yuyuko','https://fumo.website/img/040.jpg','3','2','3'), \
             ('Patchouli Knowledge','https://fumo.website/img/006.jpg','3','3','6') \
         ");
 })
