@@ -64,7 +64,7 @@ function Game() {
       .then(data => {
         setFumos(data)
         let random = Math.floor(Math.random() * data.length)
-        setSummFumo(data[random])
+        addFumo(data[random])
       })
       .catch(err => console.log(err))
   }
@@ -118,7 +118,6 @@ function Game() {
     let coinCount = fumoCoins - 50
     setFCoins(coinCount)
     summonFumo()
-    addFumo(summonedFumo)
   }
 
   if (gameStarted) {
